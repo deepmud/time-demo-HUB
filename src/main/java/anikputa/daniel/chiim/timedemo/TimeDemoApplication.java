@@ -8,7 +8,7 @@ public class TimeDemoApplication {
 	public TimeDemoApplication(){
 		System.out.println("hello world");
 	}
-
+GZZGHGJHK
 	public static void main(String[] args) {
 		SpringApplication.run(TimeDemoApplication.class, args);
 	}
