@@ -1,0 +1,684 @@
+﻿@model Jamb_CBT_Question_Bank.Logic.DTO.CreateQuestionOptionDTO
+@using System.Web
+@{
+	Layout="~/Views/Shared/_AuthorizedLayout.cshtml";
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+			.optrad .form-check .form-check-input {
+		float: left;
+		margin-left: 4.5em;
+	}
+</style>
+
+
+
+	<div class="card mb-3">
+		<div class="card-header border-bottom">
+			
+				
+
+				<h2>Question Setting</h2>
+		</div>
+		<div class="card-body">
+	<div class="row">
+		<div class="col">
+			<select class="form-control" asp-for="QuestionOption.Question.Specifiction.Section.Subject.Id" id="subjectId" type="text" required asp-items="@ViewBag.Subjects" onchange=" PopulateSection()">
+				<option value="">-- Select Subject --</option>
+			</select>
+			<span asp-validation-for="QuestionOption.Question.Specifiction.Section.Subject.Id" class="text-danger" ></span>
+		</div>
+		<div class="col">
+		<select class="form-control" asp-for="QuestionOption.Question.Specifiction.Section.Id" type="text" required id="sectionId" onchange=" PopulateSpecification()"></select>
+		</div>
+		<div class="col">
+
+		<select class="form-control" asp-for="QuestionOption.Question.Specifiction.Id" type="text" required id="specificationId" onchange=" PopulateObjective()"></select>
+		</div>
+	<span hidden class="text-danger" id="specificationCount"></span>
+		
+	</div>
+	<span class=" col-3">Choose Question Type: </span>
+		<div class="d-flex col-9 ">
+		
+			<div class=" col form-check">
+
+				<input type="radio" class="form-check-input" id="radio1" name="optradio" value="option1"  onclick="radioNormal()">
+			<label class="form-check-label" for="radio1">normal</label>
+
+			</div>
+			<div class="col form-check">
+
+			<input type="radio" class="form-check-input" id="radio2" name="optradio" value="option2" onclick="radioPassage()">
+			<label class="form-check-label" for="radio2">Passage</label>
+
+			</div>
+			<div class="col form-check">
+
+			<input type="radio" class="form-check-input" id="radio3" name="optradio" value="option3" onclick="radioClozePassage()">
+			<label class="form-check-label">Cloze Passage</label>
+
+			</div>
+		</div>
+	</div>
+	</div>
+	<div class="card mb-3" style="display:none" id="questionDiv">
+		<div class="card-body">
+	<div class="">
+		
+
+		
+
+
+
+		<form asp-action="SaveNormalQuestion" asp-controller="Question" method="POST" enctype="multipart/form-data">
+
+
+		<div id="forNormal" style="display:none">
+
+			<div class="duplicateNormal" style="background-color:#E7E9EB; margin-top:70px;border-radius:10px;">
+				<div class="p-2">
+					<div class="col d-flex justify-content-between">
+						<select class="form-control w-25 objectiveId col" asp-for="SpecificationObjectiveDTO.Id" name="SpecificationObjectiveDTO.Id_0_0" type="text" required></select>
+						<div class="Specnumber  col px-4" style="text-align: end; font-size:24px">
+							<span class="badge badge round-capsule badge-soft-success">
+								1
+							</span>
+							</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-9 mb-3 ">
+							<label>Question:</label>
+							<input type="text" asp-for="QuestionOption.Question.QuestionText" name="QuestionOption.Question.QuestionText_0_0" class="form-control" placeholder="enter your question">
+						</div>
+						<div class=" col-3 mb-3">
+							<label>Does Your Question Have Image:</label>
+							<input type="file" class="form-control" placeholder="Question Image OPtional" name="normalQuestionImg_0_0">
+						</div>
+					</div>
+
+				</div>
+
+				<div class="p-2">
+					<div id="duplicateNormalOption_0">
+						<button type="button" class="btn btn-info" onclick="radioOption(this)">Want to Add Option?</button>
+						<div class="row justify-content-around optrad">
+							<div class="col mb-3 ">
+								<label>Option Alphabelt:</label>
+
+								<input type="text" asp-for="QuestionOption.Option" name="QuestionOption.Option_0_0" class="form-control" placeholder="" value="A">
+							</div>
+							<div class="col mb-3 ">
+								<label>Option Text:</label>
+								<input type="text" class="form-control" asp-for="QuestionOption.OptionText" name="QuestionOption.OptionText_0_0" placeholder="enter your option text">
+							</div>
+							<div class="col mb-3 ">
+								<label> Does Your Option Have Image:</label>
+								<input type="file" class="form-control" placeholder="Question Image OPtional" name="normalOptionImg_0_0">
+							</div>
+							<div class="col  form-check">
+								<label class="form-check-label d-block ">Choose Correct Answer</label>
+								<input type="radio" class="form-check-input " id="radioAnswer_0" name="optradioAnserNormal_0_0" value="A" onclick="radioAnswerClose(this)">
+
+							</div>
+							<div class="col-1 mb-3 mt-2  ii">
+								<i class="fa fa-trash fa-lg  mt-4 "></i>
+
+							</div>
+
+
+						</div>
+
+					</div>
+					<div class=" correctNormalOptionRow_0">
+						<span class="col">
+							<label>Your Correct Answer Is:</label>
+						</span>
+						<span class="col-1">
+							<input type="text" class="form-control  d-inline" asp-for="QuestionOption.CorrectOption" name="QuestionOption.CorrectOption_0_0" placeholder="" style="width: 4%!important">
+						</span>
+
+
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="form-group"><input class="btn btn-secondary btn-block mt-3" id="forNormalSubmitButton" type="submit" value="Submit Normal Question"/></div>
+	</form>
+
+
+	<form asp-action="SavePassageQuestion" asp-controller="Question" method="POST" enctype="multipart/form-data">
+
+		<div id="forPassage" style="display:none">
+			<div class="row">
+				<div class="col-8 mt-5">
+					<label for="comment">Passage:</label>
+					<textarea class="form-control" rows="5" id="comment" name="passageText"></textarea>
+				</div>
+					<div class="col-4 mt-5">
+						<label for="comment">Does Your Passage Have Image:</label>
+						<input type="file" class="form-control" placeholder="Question Image OPtional" name="passageImg">
+					</div>
+			</div>
+			<div class="duplicatePassage" style="background-color:#E7E9EB; margin-top:40px;border-radius:10px;">
+				<div class="p-2">
+					<div class="col d-flex justify-content-between">
+						<select class="form-control w-25 objectiveId col" asp-for="SpecificationObjectiveDTO.Id" name="SpecificationObjectiveDTO.Id_1_0 type="text" required></select>
+						<div class="Specnumber  col px-4" style="text-align: end; font-size:24px">1</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-9 mb-3 ">
+							<label>Question:</label>
+							<input type="text" asp-for="QuestionOption.Question.QuestionText" name="QuestionOption.Question.QuestionText_1_0" class="form-control" placeholder="enter your question">
+						</div>
+						<div class=" col-3 mb-3">
+							<label>Does Your Question Have Image:</label>
+							<input type="file" class="form-control" placeholder="Question Image OPtional" name="passageQuestionImg_1_0">
+						</div>
+					</div>
+
+				</div>
+
+				<div class="p-2">
+					<div id="duplicatePassagelOption_0">
+						<button type="button" class="btn btn-info" onclick="radioOption(this)">Want to Add Option?</button>
+						<div class="row justify-content-around optrad">
+							<div class="col mb-3 ">
+								<label>Option Alphabelt:</label>
+
+								<input type="text" asp-for="QuestionOption.Option" name="QuestionOption.Option_1_0" class="form-control" placeholder="" value="A">
+							</div>
+							<div class="col mb-3 ">
+								<label>Option Text:</label>
+								<input type="text" class="form-control" asp-for="QuestionOption.OptionText" name="QuestionOption.OptionText_1_0" placeholder="enter your option text">
+							</div>
+							<div class="col mb-3 ">
+								<label> Does Your Option Have Image:</label>
+								<input type="file" class="form-control" placeholder="Question Image OPtional" name="passageOptionImg_1_0">
+							</div>
+							<div class="col  form-check">
+								<label class="form-check-label d-block ">Choose Correct Answer</label>
+								<input type="radio" class="form-check-input " id="radioAnswer_1" name="optradioAnserPasaage_1_0" value="A" onclick="radioAnswerClose(this)">
+
+							</div>
+							<div class="col-1 mb-3 mt-2  ii">
+								<i class="fa fa-trash fa-lg  mt-4 "></i>
+
+							</div>
+
+
+						</div>
+
+					</div>
+					<div class=" correctPassageOptionRow_0">
+						<span class="col">
+							<label>Your Correct Answer Is:</label>
+						</span>
+						<span class="col-1">
+							<input type="text" class="form-control  d-inline" asp-for="QuestionOption.CorrectOption" name="QuestionOption.CorrectOption_1_0" placeholder="" style="width: 4%!important">
+						</span>
+
+
+
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<div class="form-group"><input class="btn btn-secondary btn-block mt-3" id="forPassagSubmitButton" type="submit" value="Submit Passage Question"/></div>
+	</form>
+
+
+
+	<form asp-action="SaveClozePassageQuestion" asp-controller="Question" method="POST" enctype="multipart/form-data">
+				<div id="forClozePassage" style="display:none">
+			<h3 class=" mt-5 font-italic">Please type in the cloze passage sentence questions number by number</h3>
+
+			<div class="duplicateClozePassage" style="background-color:#E7E9EB; margin-top:40px ;border-radius:10px;">
+				<div class="p-2">
+					<div class="col d-flex justify-content-between">
+						<select class="form-control w-25 objectiveId col" asp-for="SpecificationObjectiveDTO.Id" name="SpecificationObjectiveDTO.Id_2_0 type="text" required></select>
+						<div class="Specnumber  col px-4" style="text-align: end; font-size:24px">1</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-9 mb-3 ">
+							<label>Question:</label>
+							<input type="text" asp-for="QuestionOption.Question.QuestionText" name="QuestionOption.Question.QuestionText_2_0" class="form-control" placeholder="enter your question">
+						</div>
+						<div class=" col-3 mb-3">
+							<label>Does Your Question Have Image:</label>
+							<input type="file" class="form-control" placeholder="Question Image OPtional" name="clozePassageQuestionImg_2_0">
+						</div>
+					</div>
+
+				</div>
+
+				<div class="p-2">
+					<div id="duplicateClozePassagelOption_0">
+						<button type="button" class="btn btn-info" onclick="radioOption(this)">Want to Add Option?</button>
+						<div class="row justify-content-around optrad">
+							<div class="col mb-3 ">
+								<label>Option Alphabelt:</label>
+
+								<input type="text" asp-for="QuestionOption.Option" name="QuestionOption.Option_2_0" class="form-control" placeholder="" value="A">
+							</div>
+							<div class="col mb-3 ">
+								<label>Option Text:</label>
+								<input type="text" class="form-control" asp-for="QuestionOption.OptionText" name="QuestionOption.OptionText_2_0" placeholder="enter your option text">
+							</div>
+							<div class="col mb-3 ">
+								<label> Does Your Option Have Image:</label>
+								<input type="file" class="form-control" placeholder="Question Image OPtional" name="clozePassageOptionImg_2_0">
+							</div>
+							<div class="col  form-check">
+								<label class="form-check-label d-block ">Choose Correct Answer</label>
+								<input type="radio" class="form-check-input " id="radioAnswer_2" name="optradioAnserClozePassage_2_0" value="A" onclick="radioAnswerClose(this)">
+
+							</div>
+							<div class="col-1 mb-3 mt-2  ii">
+								<i class="fa fa-trash fa-lg  mt-4 "></i>
+
+							</div>
+
+
+						</div>
+
+					</div>
+					<div class=" correctClozePassageOptionRow_0">
+						<span class="col">
+							<label>Your Correct Answer Is:</label>
+						</span>
+						<span class="col-1">
+							<input type="text" class="form-control  d-inline" asp-for="QuestionOption.CorrectOption" name="QuestionOption.CorrectOption_2_0" placeholder="" style="width: 4%!important">
+						</span>
+
+
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="form-group"><input class="btn btn-secondary btn-block mt-3" id="forClozePassagSubmitButton" type="submit" name="submit" value="Submit Cloze Passage Question"></div>
+	</form>
+
+	</div>
+	</div>
+	</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+
+	function radioOption(e) {
+		var numb = e.parentNode.childElementCount;
+		specificationCodunt = document.getElementsByClassName("Specnumber");
+
+		
+		var node = e.parentNode.children[1];
+		const clone = node.cloneNode(true);
+
+		var optionid = clone.children[0].children[1].id;
+		var optionidText = clone.children[1].children[1].id;
+		var optionidImage = clone.children[2].children[1].id;
+		var optionidOptRadio = clone.children[3].children[1].id;
+
+
+		var ff4 = clone.children[0].children[1].setAttribute('id', `${optionid}_${numb}`);
+		var alpha = "A".charCodeAt(0)+numb-1;
+		var alpha2 = String.fromCharCode(alpha);
+		clone.children[0].children[1].value = alpha2;
+		var fsd = clone.children[3].children[1].value = alpha2;
+		//var ff4 = clone.children[3].children[1].setAttribute('id', `radioAnswer${numb - 1}`);
+		var ff4 = clone.children[3].children[1].classList.add("mt-4");
+		var ff4 = clone.children[3].removeChild(clone.children[3].children[0]);
+		var ff3c = clone.children[1].children[1].setAttribute('id', `${optionidText}_${numb}`);
+		var ff3d = clone.children[2].children[1].setAttribute('id', `${optionidImage}_${numb}`);
+		var ff3d = clone.children[3].children[0].setAttribute('id', `${optionidOptRadio}_${numb}`);
+		var ff3e = clone.children[4].children[0].setAttribute("onclick", 'removeElement(this)');
+		var kd = clone.children[4].children[0].setAttribute("onmouseover","this.style.cursor='pointer'");
+		e.parentNode.appendChild(clone);
+
+		 
+		//var optionidsddn = `${optionid1[0]}_${optionid1[1]
+		//	}_${optionid1[2]} `
+
+	};
+
+
+	function removeElement(e) {
+		
+
+		var root = e.parentNode.parentNode;
+
+		root.parentNode.removeChild(root);
+		console.log(root);
+
+	}
+
+	function radioAnswerClose(f){
+		var root = f.parentNode.parentNode;
+		var rootvalue = root.children[0].children[1].value
+		root.parentNode.parentNode.children[1].children[1].children[0].value = rootvalue;
+	}
+
+
+
+	function PopulateObjective() {
+		let specificationId = $('#specificationId').val();
+
+
+		loadObjective(specificationId);
+	}
+	//-----------------------------------------load Exam Session---------------------//
+	function loadObjective(specificationId) {
+		
+		if (specificationId > 0) {
+			$.ajax({
+				type: 'GET',
+				url: '@Url.Action("GetSpecificationOjective", "Question")', // we are calling json method
+				dataType: 'json',
+				data: { specificationId },
+				success: function (result) {
+					if (!result.isError && result.specificationObj != undefined) {
+
+						$(".objectiveId").empty();
+						//populate ExamBatch
+						$(".objectiveId").append('<option value = "' + 0 + '" > -- Select Objective -- </option>');
+						$.each(result.specificationObj, function (i, specificationObj) {
+							$(".objectiveId").append('<option value = "' + specificationObj.id + '" >' + specificationObj.objective.name + '</option>');
+							$("#specificationCount").html(specificationObj.specification.count);
+							//document.getElementsByClassName("Specnumber").children[specificationCount++].innerHTML = specificationCount;
+
+						});
+
+						radioChecker();
+					}
+
+				},
+				error: function (ex) {
+					alert('error' + ex);
+				}
+
+			});
+		}
+	}
+
+
+	function radioChecker(){
+		if ($("#radio1").is(":checked")) {
+			radioNormal();
+		}
+
+		else if ($("#radio2").is(":checked")) {
+			
+			radioPassage();
+		}else if ($("#radio3").is(":checked")) {
+			radioClozePassage();
+		}
+		else{
+		
+			$("#questionDiv").attr("style", "display:none");
+			$("#forClozePassage").attr("style", "display:none");
+			$("#forPassage").attr("style", "display:none");
+			$("#forNormal").attr("style", "display:none");
+			$("#forClozePassagSubmitButton").attr("style", "display:none");
+			$("#forPassagSubmitButton").attr("style", "display:none");
+			$("#forNormalSubmitButton").attr("style", "display:none");
+		}
+	
+	}
+
+	function radioPassage(){
+
+		var spc = $("#specificationCount").html();
+		//let specificationCount = 0;
+		//var specificationCodunt = "";
+		//specificationCodunt = document.getElementsByClassName("Specnumber")[specificationCount].innerHTML = specificationCount + 1;
+		$("#questionDiv").removeAttr("style");
+
+		$("#forClozePassage").attr("style", "display:none");
+		$("#forPassage").removeAttr("style");
+		$("#forNormal").attr("style", "display:none");
+		$("#forClozePassagSubmitButton").attr("style", "display:none");
+		$("#forPassagSubmitButton").removeAttr("style");
+			$("#forNormalSubmitButton").attr("style", "display:none");
+		for (var sp = 1; sp < spc; sp++) {
+
+			var node = document.getElementsByClassName('duplicatePassage')[0];
+			
+			const clone = node.cloneNode(true);
+			var ddd = clone.children[0].children[0];
+			var ff = clone.children[0].children[0].children[0].setAttribute('id', `SpecificationObjectiveDTO.Id_1_${sp}`);
+			var ff = clone.children[0].children[0].children[0].setAttribute('name', `SpecificationObjectiveDTO.Id_1_${sp}`);
+			var ff = clone.children[0].children[0].children[1].innerHTML = sp + 1;
+			var ff3 = clone.children[0].children[1].children[0].children[1].setAttribute('id', `QuestionOption.Question.QuestionText_1_${sp}`);
+			var ff3 = clone.children[0].children[1].children[0].children[1].setAttribute('name', `QuestionOption.Question.QuestionText_1_${sp}`);
+			var ff4 = clone.children[1].children[0].children[1].children[0].children[1].setAttribute('id', `QuestionOption.Option_1_${sp}`);
+			var ff4 = clone.children[1].children[0].children[1].children[0].children[1].setAttribute('name', `QuestionOption.Option_1_${sp}`);
+			var ff35 = clone.children[1].children[0].setAttribute('id', `duplicatePassageOption_1_${sp}`);
+			var ff35 = clone.children[1].children[0].setAttribute('name', `duplicatePassageOption_1_${sp}`);
+			var ff36 = clone.children[1].children[1].setAttribute('id', `correctPassageOptionRow_1_${sp}`);
+			var ff36 = clone.children[1].children[1].setAttribute('name', `correctPassageOptionRow_1_${sp}`);
+			var ff3d = clone.children[0].children[1].children[1].children[1].setAttribute('id', `passageQuestionImg_1_${sp}_0`);
+			var ff3d = clone.children[0].children[1].children[1].children[1].setAttribute('name', `passageQuestionImg_1_${sp}`);
+			var ff3c = clone.children[1].children[0].children[1].children[1].children[1].setAttribute('id', `QuestionOption.OptionText_1_${sp}`);
+			var ff3c = clone.children[1].children[0].children[1].children[1].children[1].setAttribute('name', `QuestionOption.OptionText_1_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[2].children[1].setAttribute('id', `passageOptionImg_1_${sp}_0`);
+			var ff3d = clone.children[1].children[0].children[1].children[2].children[1].setAttribute('name', `passageOptionImg_1_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[3].children[1].setAttribute('name', `optradioAnserPasaage_1_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[3].children[1].setAttribute('id', `radioAnswer_1_${sp}_0`);
+			var ff3d = clone.children[1].children[1].children[1].children[0].setAttribute('id', `QuestionOption.CorrectOption_1_${sp}`);
+			var ff3d = clone.children[1].children[1].children[1].children[0].setAttribute('name', `QuestionOption.CorrectOption_1_${sp}`);
+			
+			var element = document.getElementById("forPassage");
+			element.appendChild(clone);
+
+			//$("#forPassage").append(forNormal);
+		}
+	}
+
+	
+	function radioClozePassage(){
+
+		var spc = $("#specificationCount").html();
+		//let specificationCount = 0;
+		//var specificationCodunt = "";
+		//specificationCodunt = document.getElementsByClassName("Specnumber")[specificationCount].innerHTML = specificationCount + 1;
+		$("#questionDiv").removeAttr("style");
+		$("#forClozePassage").removeAttr("style");
+		$("#forPassage").attr("style", "display:none");
+		$("#forNormal").attr("style", "display:none");
+		$("#forClozePassagSubmitButton").removeAttr("style");
+		$("#forPassagSubmitButton").attr("style", "display:none");
+		$("#forNormalSubmitButton").attr("style", "display:none");
+		for (var sp = 1; sp < spc; sp++) {
+
+			var node = document.getElementsByClassName('duplicateClozePassage')[0];
+			
+			const clone = node.cloneNode(true);
+			var ddd = clone.children[0].children[0];
+			var ff = clone.children[0].children[0].children[0].setAttribute('id', `SpecificationObjectiveDTO.Id_2_${sp}`);
+			var ff = clone.children[0].children[0].children[0].setAttribute('name', `SpecificationObjectiveDTO.Id_2_${sp}`);
+			var ff = clone.children[0].children[0].children[1].innerHTML = sp + 1;
+			var ff3 = clone.children[0].children[1].children[0].children[1].setAttribute('id', `QuestionOption.Question.QuestionText_2_${sp}`);
+			var ff3 = clone.children[0].children[1].children[0].children[1].setAttribute('name', `QuestionOption.Question.QuestionText_2_${sp}`);
+			var ff4 = clone.children[1].children[0].children[1].children[0].children[1].setAttribute('id', `QuestionOption.Option_2_${sp}`);
+			var ff4 = clone.children[1].children[0].children[1].children[0].children[1].setAttribute('name', `QuestionOption.Option_2_${sp}`);
+			var ff35 = clone.children[1].children[0].setAttribute('id', `duplicateClozePassageOption_2_${sp}`);
+			var ff35 = clone.children[1].children[0].setAttribute('name', `duplicateClozePassageOption_2_${sp}`);
+			var ff36 = clone.children[1].children[1].setAttribute('id', `correctClozePassageOptionRow_2_${sp}`);
+			var ff36 = clone.children[1].children[1].setAttribute('name', `correctClozePassageOptionRow_2_${sp}`);
+			var ff3d = clone.children[0].children[1].children[1].children[1].setAttribute('id', `clozePassageQuestionImg_${sp}_0`);
+			var ff3d = clone.children[0].children[1].children[1].children[1].setAttribute('name', `clozePassageQuestionImg_2_${sp}_0`);
+			var ff3c = clone.children[1].children[0].children[1].children[1].children[1].setAttribute('id', `QuestionOption.OptionText_2_${sp}_0`);
+			var ff3c = clone.children[1].children[0].children[1].children[1].children[1].setAttribute('name', `QuestionOption.OptionText_2_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[2].children[1].setAttribute('id', `clozePassageOptionImg_2_${sp}_0`);
+			var ff3d = clone.children[1].children[0].children[1].children[2].children[1].setAttribute('name', `clozePassageOptionImg_2_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[3].children[1].setAttribute('name', `optradioAnserClozePassage_2_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[3].children[1].setAttribute('id', `radioAnswer_2_${sp}_0`);
+			var ff3d = clone.children[1].children[1].children[1].children[0].setAttribute('id', `QuestionOption.CorrectOption_2_${sp}`);
+			var ff3d = clone.children[1].children[1].children[1].children[0].setAttribute('name', `QuestionOption.CorrectOption_2_${sp}`);
+			
+			var element = document.getElementById("forClozePassage");
+			element.appendChild(clone);
+
+			//$("#forNormal").append(forPassage);
+		}
+	}
+
+
+	function radioNormal(){
+
+		var spc = $("#specificationCount").html();
+		//let specificationCount = 0;
+		//var specificationCodunt = "";
+		//specificationCodunt = document.getElementsByClassName("Specnumber")[specificationCount].innerHTML = specificationCount + 1;
+		$("#questionDiv").removeAttr("style");
+
+		$("#forClozePassage").attr("style", "display:none");
+		$("#forPassage").attr("style", "display:none");
+		$("#forNormal").removeAttr("style");
+		$("#forClozePassagSubmitButton").attr("style", "display:none");
+			$("#forPassagSubmitButton").attr("style", "display:none");
+		$("#forNormalSubmitButton").removeAttr("style");
+		for (var sp = 1; sp < spc; sp++) {
+
+			var node = document.getElementsByClassName('duplicateNormal')[0];
+			
+			const clone = node.cloneNode(true);
+			var ddd = clone.children[0].children[0];
+			var ff = clone.children[0].children[0].children[0].setAttribute('id', `SpecificationObjectiveDTO.Id_0_${sp}`);
+			var ff = clone.children[0].children[0].children[0].setAttribute('name', `SpecificationObjectiveDTO.Id_0_${sp}`);
+			var ff = clone.children[0].children[0].children[1].innerHTML = sp + 1;
+			var ff3 = clone.children[0].children[1].children[0].children[1].setAttribute('id', `QuestionOption.Question.QuestionText_0_${sp}`);
+			var ff3 = clone.children[0].children[1].children[0].children[1].setAttribute('name', `QuestionOption.Question.QuestionText_0_${sp}`);
+			var ff4 = clone.children[1].children[0].children[1].children[0].children[1].setAttribute('id', `QuestionOption.Option_0_${sp}`);
+			var ff4 = clone.children[1].children[0].children[1].children[0].children[1].setAttribute('name', `QuestionOption.Option_0_${sp}`);
+			var ff35 = clone.children[1].children[0].setAttribute('id', `duplicateNormalOption_0_${sp}`);
+			var ff35 = clone.children[1].children[0].setAttribute('name', `duplicateNormalOption_0_${sp}`);
+			var ff36 = clone.children[1].children[1].setAttribute('id', `correctNormalOptionRow_0_${sp}`);
+			var ff36 = clone.children[1].children[1].setAttribute('name', `correctNormalOptionRow_0_${sp}`);
+			var ff3d = clone.children[0].children[1].children[1].children[1].setAttribute('id', `normalQuestionImg_0_${sp}_0`);
+			var ff3d = clone.children[0].children[1].children[1].children[1].setAttribute('name', `normalQuestionImg_0_${sp}`);
+			var ff3c = clone.children[1].children[0].children[1].children[1].children[1].setAttribute('id', `QuestionOption.OptionText_0_${sp}_0`);
+			var ff3c = clone.children[1].children[0].children[1].children[1].children[1].setAttribute('name', `QuestionOption.OptionText_0_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[2].children[1].setAttribute('id', `normalOptionImg_0_${sp}_0`);
+			var ff3d = clone.children[1].children[0].children[1].children[2].children[1].setAttribute('name', `normalOptionImg_0_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[3].children[1].setAttribute('name', `optradioAnserNormal_0_${sp}`);
+			var ff3d = clone.children[1].children[0].children[1].children[3].children[1].setAttribute('id', `radioAnswer_0_${sp}_0`);
+			var ff3d = clone.children[1].children[1].children[1].children[0].setAttribute('id', `QuestionOption.CorrectOption_0_${sp}`);
+			var ff3d = clone.children[1].children[1].children[1].children[0].setAttribute('name', `QuestionOption.CorrectOption_0_${sp}`);
+			
+			var element = document.getElementById("forNormal");
+			element.appendChild(clone);
+
+			//$("#forNormal").append(forNormal);
+		}
+	}
+</script>
+<script>
+	$(document).ready(function () {
+		var forPassage = $("#forPassage").html();
+		if ($("#radio1").is(":checked")) {
+			radioNormal();
+		}
+
+		else if ($("#radio2").is(":checked")) {
+			
+			radioPassage();
+		}else if ($("#radio3").is(":checked")) {
+			radioClozePassage();
+		}
+		else{
+			$("#questionDiv").attr("style", "display:none");
+
+			$("#forClozePassage").attr("style", "display:none");
+			$("#forPassage").attr("style", "display:none");;
+			$("#forNormal").attr("style", "display:none");
+			$("#forClozePassagSubmitButton").attr("style", "display:none");
+			$("#forPassagSubmitButton").attr("style", "display:none");
+			$("#forNormalSubmitButton").attr("style", "display:none");
+		}
+	})
+</script>
+<script>
+	function PopulateSection() {
+		let subjectId = $('#subjectId').val();
+		loadSection(subjectId);
+	}
+	//-----------------------------------------load Exam Session---------------------//
+	function loadSection(subjectId) {
+
+		if (subjectId > 0) {
+			$.ajax({
+				type: 'GET',
+				url: '@Url.Action("GetSubjectSection", "Question")', // we are calling json method
+				dataType: 'json',
+				data: { subjectId },
+				success: function (result) {
+					if (!result.isError && result.section != undefined) {
+
+						$("#sectionId").empty();
+						//populate ExamBatch
+						$("#sectionId").append('<option value = "" > -- Select Section -- </option>');
+						 $.each(result.section, function (i, section) {
+								$("#sectionId").append('<option value = "' + section.id + '" >' + section.name + '</option>');
+						 });
+
+
+					}
+
+				},
+				error: function (ex) {
+					alert('error' + ex);
+				}
+
+			});
+		}
+	}
+
+	function PopulateSpecification() {
+		let sectionId = $('#sectionId').val();
+		loadSpecification(sectionId);
+	}
+	//-----------------------------------------load Exam Session---------------------//
+	function loadSpecification(sectionId) {
+
+		if (sectionId > 0) {
+			$.ajax({
+				type: 'GET',
+				url: '@Url.Action("GetSectionSpecification", "Question")', // we are calling json method
+				dataType: 'json',
+				data: { sectionId },
+				success: function (result) {
+					if (!result.isError && result.specification != undefined) {
+
+						$("#specificationId").empty();
+						//populate ExamBatch
+						$("#specificationId").append('<option value = "' + 0 + '" > -- Select SubTopic -- </option>');
+							$.each(result.specification, function (i, specification) {
+							$("#specificationId").append('<option value = "' + specification.id + '" >' + specification.name + '</option>');
+							 });
+
+
+					}
+
+				},
+				error: function (ex) {
+					alert('error' + ex);
+				}
+
+			});
+		}
+	}
+
+
+
+
+	
+</script>
