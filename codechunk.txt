@@ -1,0 +1,22 @@
+///using .net assembly read a file
+private string ParseTemplate(string path)
+{
+			string result;
+			try
+			{
+				var assembly = Assembly.GetExecutingAssembly();
+				using (var stream = assembly.GetManifestResourceStream(path))
+				using (var reader = new StreamReader(stream))
+				{
+					result = reader.ReadToEnd();
+				}
+			}
+			catch (Exception ex)
+			{
+
+				throw ex;
+			}
+
+
+			return result;
+}
